@@ -28,7 +28,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Tree View Sample");
+        primaryStage.setTitle("UDP Server Monitor");
         // Client container
         clients = new TreeItem<>(new Request("Clients"));
 
@@ -56,7 +56,7 @@ public class Main extends Application {
         Thread thread = new Thread(socketThread);
         thread.start();
 
-        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.setScene(new Scene(root, 600, 500));
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
             socketThread.running = false;
