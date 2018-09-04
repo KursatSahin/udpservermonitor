@@ -2,6 +2,7 @@ package clientUI;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -17,6 +18,8 @@ public class SocketThread extends Task {
     private boolean running = true;
     public TreeView<Request> tree;
     public TreeItem<Request> clients;
+    Label clientCountLabel;
+    private int clientCount = 0;
 
     @Override
     public Object call() {
@@ -54,17 +57,23 @@ public class SocketThread extends Task {
             Platform.runLater(() -> {
                 AtomicBoolean newClient = new AtomicBoolean(true);
                 // If we got same client id before add it as a child.
+                String newClientId = requestTreeItem.getValue().getClientId();
                 clients.getChildren().forEach((treeItem) -> {
                     Request currRequest = treeItem.getValue();
                     String currClientId = currRequest.getClientId();
-                    String reqClientId = requestTreeItem.getValue().getClientId();
-                    if (currClientId.equals(reqClientId)) {
+                    if (currClientId.equals(newClientId)) {
                         treeItem.getChildren().add(requestTreeItem);
                         newClient.set(false);
                     }
                 });
+
+                // If we got new client, add a category for it and insert this client request under this category
+                // And increment client count by 1
                 if (newClient.get()) {
-                    clients.getChildren().add(requestTreeItem);
+                    TreeItem<Request> newCategory = new TreeItem<>(new Request(newClientId));
+                    newCategory.getChildren().add(requestTreeItem);
+                    clients.getChildren().add(newCategory);
+                    clientCountLabel.setText("Client count: " + (++clientCount));
                 }
             });
         }

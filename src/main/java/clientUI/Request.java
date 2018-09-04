@@ -8,8 +8,8 @@ public class Request {
     private final SimpleStringProperty protocol;
     private final SimpleStringProperty serviceName;
 
-    public Request() {
-        this.clientId = new SimpleStringProperty("");
+    public Request(String clientId) {
+        this.clientId = new SimpleStringProperty(clientId);
         this.sequenceId = new SimpleStringProperty("");
         this.protocol = new SimpleStringProperty("");
         this.serviceName = new SimpleStringProperty("");
@@ -72,11 +72,12 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{" +
-                "clientId=" + clientId +
-                ", sequenceId=" + sequenceId +
-                ", protocol=" + protocol +
-                ", serviceName=" + serviceName +
-                '}';
+        if (sequenceId.isEmpty().get()) {
+            return "Client Id: " + clientId.get();
+        } else {
+            return "sequenceId=" + sequenceId.get() +
+                    ", protocol=" + protocol.get() +
+                    ", serviceName=" + serviceName.get();
+        }
     }
 }
