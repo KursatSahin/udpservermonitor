@@ -1,8 +1,10 @@
 package clientUI;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,6 +12,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -26,7 +29,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Tree View Sample");
-
         // Client container
         clients = new TreeItem<>(new Request("Clients"));
 
@@ -37,6 +39,7 @@ public class Main extends Application {
         // Client count
         clientCountLabel = new Label("Client count: 0");
         clientCountLabel.setPadding(new Insets(5, 5, 5, 5));
+
         AnchorPane root = new AnchorPane();
         root.getChildren().addAll(tree, clientCountLabel);
         AnchorPane.setTopAnchor(tree, 0.0);
@@ -44,10 +47,6 @@ public class Main extends Application {
         AnchorPane.setRightAnchor(tree, 0.0);
         AnchorPane.setBottomAnchor(tree, 30.0);
         AnchorPane.setBottomAnchor(clientCountLabel, 0.0);
-//        root.setAlignment(clientCountLabel, Pos.TOP_LEFT);
-
-        // Set tree table columns
-//        TreeTableColumn<String, String> column = new TreeTableColumn<>("Column");
 
         // Start reader thread
         SocketThread socketThread = new SocketThread();
@@ -59,5 +58,10 @@ public class Main extends Application {
 
         primaryStage.setScene(new Scene(root, 300, 250));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> {
+            socketThread.running = false;
+            Platform.exit();
+            System.exit(0);
+        });
     }
 }

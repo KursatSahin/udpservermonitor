@@ -15,11 +15,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SocketThread extends Task {
 
     private static int PORT = 8082;
-    private boolean running = true;
     public TreeView<Request> tree;
     public TreeItem<Request> clients;
     Label clientCountLabel;
     private int clientCount = 0;
+    public boolean running = true;
 
     @Override
     public Object call() {
